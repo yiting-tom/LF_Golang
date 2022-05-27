@@ -1,0 +1,39 @@
+# commit log 請遵造以下格式，並注意冒號後面有一個空格
+# 
+# <type>: <subject> {Necessary}
+# 
+# <body> {Optional}
+# 
+# <footer> {Optional}
+# 
+# e.g.
+# feat: Implementation login api function
+#
+# Finished login module and integration with server login api
+#
+# Closes OR-xxxx 
+# 
+# <Type>
+# Please fellow these rules.
+# feat: New feature
+# fix: Bug fixed
+# docs: documentation change
+# style: coding style change
+# refactor: refactor origin function
+# perf: performance promotion
+# test: new testing
+# build: build utils change
+# ci: relative with ci
+# add: add new files are not relative with codes
+# 
+# <Subject>
+# A brief description of the impact of this change.
+# 
+# <Body>
+# Specific changes information. The more detailed, the better.
+# 
+# <Footer>
+# If want to close a specific Issue or Bug, could use `Closes PROJECT-1`
+# or `Resolves PROJECT-1` or `Fixes PROJECT-1`.
+# official recommend: https://docs.gitlab.com/ee/user/project/integrations/jira.html
+#
