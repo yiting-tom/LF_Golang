@@ -1,7 +1,7 @@
 # 01 Introduction
 
 ## Project Structure
-```js
+```go
 .
 ├── main.go +
 └── README.md +
