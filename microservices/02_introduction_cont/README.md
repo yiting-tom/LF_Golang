@@ -7,8 +7,8 @@
 ├── handlers +
 │   ├── goodbye.go +
 │   └── hello.go +
-├── main.go M
-└── README.md M
+├── main.go *
+└── README.md *
 ```
 
 ## Run the code
