@@ -1,9 +1,10 @@
 # 01 Introduction
 
 ## Project Structure
-```
-01_introduction
-    └─main.go
+```js
+.
+├── main.go +
+└── README.md +
 ```
 
 ## Run the code
