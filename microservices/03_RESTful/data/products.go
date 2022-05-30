@@ -16,7 +16,7 @@ type Product struct {
 	DeletedOn   string  `json:"-"`
 }
 
-// Proeucts is a collection of Product
+// Products is a collection of Product
 type Products []*Product
 
 func (p *Products) ToJSON(w io.Writer) error {
