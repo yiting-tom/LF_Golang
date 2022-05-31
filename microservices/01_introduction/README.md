@@ -43,6 +43,13 @@ http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 ```
 Registers the `handler function` for the given pattern `/` in the [`DefaultServeMux`](https://pkg.go.dev/net/http#ServeMux), which explains how patterns are matched.
 
+### [http.ResponseWriter](https://pkg.go.dev/net/http#ResponseWriter)
+- Used by an HTTP handler to construct an HTTP response.
+- May **not** be used after the Handler.ServeHTTP method has returned.
+
+### [http.Request](https://pkg.go.dev/net/http#Request)
+A Request represents an HTTP request reveived by a server or to be sent by a client
+
 ## [http.ListenAndServe](https://pkg.go.dev/net/http#ListenAndServe)
 ```go
 // Define
