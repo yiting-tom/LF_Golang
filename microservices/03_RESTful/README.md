@@ -73,3 +73,50 @@ An Encoder writes JSON values to an output stream.
 #### [Encoder.Encode](https://pkg.go.dev/encoding/json#Encoder.Encode)
 Encode writes the JSON encoding of v to the stream, followed by a newline character.
 
+## handlers/product.go
+### Implement the ServeHTTP method
+```go
+func (p *Products) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// handle GET method.
+	if r.Method == http.MethodGet {
+		p.getProducts(w, r)
+		return
+	}
+
+	// If no method is satisfied return an error
+	w.WriteHeader(http.StatusMethodNotAllowed)
+}
+```
+#### [ResponseWriter](https://pkg.go.dev/net/http#ResponseWriter)
+```go
+type ResponseWriter interface {
+	Header() Header
+	Write([]byte) (int, error)
+	WriteHeader(statusCode int)
+}
+```
+A interface which contain:
+- `Header() Header`: Header returns the header map that will be sent by WriteHeader.
+- `Write([]byte) (int, error)`: Write writes the data to the connection as part of an HTTP reply.
+- `WriteHeader(statusCode int)`: WriteHeader sends an HTTP response header with the provided status code.
+#### [Header](https://pkg.go.dev/net/http#Header)
+```go
+type Header map[string][]string
+```
+- Represents the **key-value pairs** in an HTTP header.
+- The keys should be in **canonical form**, as returned by [CanonicalHeaderKey](https://pkg.go.dev/net/http#CanonicalHeaderKey).
+
+### Define hte getProducts function
+```go
+func (p *Products) getProducts(w http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle GET Products")
+
+	// fFetch the products from the db.
+	productList := data.GetProducts()
+
+	// Serialize the list to JSON.
+	if err := productList.ToJSON(w); err != nil {
+		http.Error(w, "Unable to marshal json", http.StatusInternalServerError)
+	}
+}
+```
