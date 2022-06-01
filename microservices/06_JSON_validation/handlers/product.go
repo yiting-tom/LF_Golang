@@ -3,6 +3,7 @@ package handlers
 import (
 	"06_json_validation/data"
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -87,7 +88,19 @@ func (p *Products) MiddlewareValidateProduct(next http.Handler) http.Handler {
 
 		// Try to parse this request's body to the newProduct.
 		if err := newProduct.FromJSON(r.Body); err != nil {
+			p.l.Println("[ERROR] Unable to parse json:", err)
 			http.Error(w, "Unable to parse json", http.StatusBadRequest)
+			return
+		}
+
+		// Validate the newProduct.
+		if err := newProduct.Validate(); err != nil {
+			p.l.Println("[ERROR] Validation failed:", err)
+			http.Error(
+				w,
+				fmt.Sprintf("Error validting product: %s", err),
+				http.StatusBadRequest,
+			)
 			return
 		}
 

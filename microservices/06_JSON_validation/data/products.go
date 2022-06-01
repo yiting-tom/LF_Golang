@@ -15,7 +15,7 @@ type Product struct {
 	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`
 	Price       float32 `json:"price" validate:"gt=0"`
-	SKU         string  `json:"sku" validate:"required,sku"`
+	SKU         string  `json:"sku" validate:"required,skuValidate"`
 	CreatedOn   string  `json:"-"`
 	UpdatedOn   string  `json:"-"`
 	DeletedOn   string  `json:"-"`
@@ -25,18 +25,15 @@ func validateSKU(fl validator.FieldLevel) bool {
 	// SKU is of format abc-abcd-abcde
 	re := regexp.MustCompile(`[a-z]+-[a-z]+-[a-z]+`)
 	matches := re.FindAllString(fl.Field().String(), -1)
+	fmt.Println(fl.Field().String())
 
 	// Exist more than one match or no match.
-	if len(matches) != 1 {
-		return false
-	}
-
-	return true
+	return len(matches) == 1
 }
 
 func (p *Product) Validate() error {
 	validate := validator.New()
-	validate.RegisterValidation("SKU", validateSKU)
+	validate.RegisterValidation("skuValidate", validateSKU)
 
 	return validate.Struct(p)
 }
@@ -113,7 +110,7 @@ var productList = []*Product{
 		Name:        "Latte",
 		Description: "Frothy milk coffee",
 		Price:       2.50,
-		SKU:         "abc123",
+		SKU:         "aaa-aaa-aaa",
 		CreatedOn:   "2020-01-01",
 		UpdatedOn:   "2020-01-01",
 	},
@@ -122,7 +119,7 @@ var productList = []*Product{
 		Name:        "Espresso",
 		Description: "Short and strong coffee",
 		Price:       3.00,
-		SKU:         "def456",
+		SKU:         "bbb-bbb-bbb",
 		CreatedOn:   "2020-01-01",
 		UpdatedOn:   "2020-01-01",
 		DeletedOn:   "",
