@@ -1,0 +1,95 @@
+definitions:
+  Product:
+    description: Product defines the structure fo an API product
+    properties:
+      description:
+        description: the description for the product
+        maxLength: 10240
+        type: string
+        x-go-name: Description
+      id:
+        description: the id for the product
+        format: int64
+        minimum: 1
+        type: integer
+        x-go-name: ID
+      name:
+        description: the name for the product
+        minLength: 255
+        type: string
+        x-go-name: Name
+      price:
+        description: the price for the product
+        format: float
+        minimum: 0
+        type: number
+        x-go-name: Price
+      sku:
+        description: the SKU for the product
+        minLength: 1
+        type: string
+        x-go-name: SKU
+    required:
+    - name
+    - price
+    - sku
+    type: object
+    x-go-package: 07_documenting_with_swagger/data
+paths:
+  /products:
+    get:
+      operationId: listProducts
+      responses:
+        "200":
+          $ref: '#/responses/productsResponse'
+      summary: Return a list of products from the db.
+      tags:
+      - products
+    post:
+      description: Create a new proudct
+      operationId: createProduct
+      responses:
+        "200":
+          $ref: '#/responses/productResponse'
+        "422":
+          $ref: '#/responses/errorResponse'
+        "501":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - products
+  /products/{id}:
+    delete:
+      description: Update a products details
+      operationId: deleteProduct
+      responses:
+        "201":
+          $ref: '#/responses/noContentResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+        "501":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - products
+    get:
+      operationId: listSingle
+      responses:
+        "200":
+          $ref: '#/responses/productsResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+      summary: Return a product from the db.
+      tags:
+      - products
+    put:
+      description: Update a products details
+      operationId: updateProduct
+      responses:
+        "200":
+          $ref: '#/responses/productResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+        "422":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - products
+swagger: "2.0"
