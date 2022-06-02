@@ -39,7 +39,7 @@ type Product struct {
 	//
 	// required: true
 	// min length: 1
-	SKU string `json:"sku" validate:"required,skuValidate"`
+	SKU string `json:"sku" validate:"required,sku"`
 }
 
 // Proeucts defines a slice of Product
