@@ -9,35 +9,43 @@ import (
 
 func TestProductMissingNameReturnsErr(t *testing.T) {
 	p := Product{
-		Price: 1.22,
+		ID:          0,
+		Name:        "",
+		Description: "test desc",
+		Price:       1.22,
+		SKU:         "aaa-aaa-aaa",
 	}
 
 	v := NewValidation()
-	err := v.Validate(p)
-	assert.Len(t, err, 1)
+	errs := v.Validate(p)
+	assert.Len(t, errs, 1)
 }
 
 func TestProductMissingPriceReturnsErr(t *testing.T) {
 	p := Product{
-		Name:  "abc",
-		Price: -1,
+		ID:          0,
+		Name:        "test name",
+		Description: "test desc",
+		SKU:         "aaa-aaa-aaa",
 	}
 
 	v := NewValidation()
-	err := v.Validate(p)
-	assert.Len(t, err, 1)
+	errs := v.Validate(p)
+	assert.Len(t, errs, 1)
 }
 
 func TestProductInvalidSKUReturnsErr(t *testing.T) {
 	p := Product{
-		Name:  "abc",
-		Price: 1.22,
-		SKU:   "abc",
+		ID:          0,
+		Name:        "test name",
+		Description: "test desc",
+		Price:       1.22,
+		SKU:         "aaa-aaa",
 	}
 
 	v := NewValidation()
-	err := v.Validate(p)
-	assert.Len(t, err, 1)
+	errs := v.Validate(p)
+	assert.Len(t, errs, 1)
 }
 
 func TestValidProductDoesNOTReturnsErr(t *testing.T) {
@@ -48,8 +56,8 @@ func TestValidProductDoesNOTReturnsErr(t *testing.T) {
 	}
 
 	v := NewValidation()
-	err := v.Validate(p)
-	assert.Len(t, err, 1)
+	errs := v.Validate(p)
+	assert.Nil(t, errs)
 }
 
 func TestProductsToJSON(t *testing.T) {
@@ -60,6 +68,6 @@ func TestProductsToJSON(t *testing.T) {
 	}
 
 	b := bytes.NewBufferString("")
-	err := ToJSON(ps, b)
-	assert.NoError(t, err)
+	errs := ToJSON(ps, b)
+	assert.NoError(t, errs)
 }
