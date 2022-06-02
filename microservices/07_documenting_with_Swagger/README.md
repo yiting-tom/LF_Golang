@@ -27,3 +27,17 @@
 ├── README.md
 └── swagger.yaml
 ```
+
+## Generate the docs
+- By Makefile
+```sh
+make swagger
+```
+
+- By CLI
+```sh
+swagger generate spec -o ./swagger.yaml --scan-models
+```
+
+## ReDoc UI
+In browser at http://localhost:9090/docs
