@@ -29,7 +29,7 @@ func main() {
 	getR := sm.Methods(http.MethodGet).Subrouter()
 	getR.HandleFunc("/products", ph.ListAll)
 	getR.HandleFunc("/products/{id:[0-9]+", ph.ListSingle)
-	// getR.Use(ph.MiddlewareAddContentType)
+	getR.Use(ph.MiddlewareAddContentType)
 
 	postr := sm.Methods(http.MethodPost).Subrouter()
 	postr.HandleFunc("/products", ph.Create)
