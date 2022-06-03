@@ -1,11 +1,13 @@
-# 08 Auto generate HTTP clients from Swagger files
+# 09 plugin CORS middleware
 
 ## Run the code
-- [API Client](https://goswagger.io/generate/client.html)
+### backend
 ```sh
-swagger generate client -f ./swagger.yaml -A product-api -c sdk/client/
+go run main.go
 ```
-or by Makefile
+
+### frontend
 ```sh
-make swagger-generate-client
+cd ./frontend
+yarn start # or npm start
 ```
