@@ -48,17 +48,17 @@ func main() {
 	// Create the handler
 	fh := handlers.NewFiles(l, store)
 
+	// filename regex: {filename: [a-zA-Z]+\\.[a-z]{3}}
+	fr := "/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{4}}"
+
 	// Create a new serve mux and register the handler
 	sm := mux.NewRouter()
 
-	// filename regex: {filename: [a-zA-Z]+\\.[a-z]{3}}
 	gh := sm.Methods(http.MethodGet).Subrouter()
-	gh.Handle(
-		"/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{3}}",
-		http.StripPrefix("/images/", http.FileServer(http.Dir(sp))),
-	)
+	gh.HandleFunc(fr, fh.GetSingleImage)
+
 	ph := sm.Methods(http.MethodPost).Subrouter()
-	ph.HandleFunc("/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{3}}", fh.ServeHTTP)
+	ph.HandleFunc(fr, fh.Create)
 
 	// Create a new server
 	s := &http.Server{
