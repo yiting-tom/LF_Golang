@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 	"github.com/yiting-tom/LF_Golang/microservices/project/product-api/data"
 )
 
@@ -15,12 +15,12 @@ type KeyProduct struct{}
 
 // Products handler
 type Products struct {
-	l *log.Logger
+	l *logrus.Logger
 	v *data.Validation
 }
 
 // NewProducts returns a new products handler with the given logger
-func NewProducts(l *log.Logger, v *data.Validation) *Products {
+func NewProducts(l *logrus.Logger, v *data.Validation) *Products {
 	return &Products{l, v}
 }
 
