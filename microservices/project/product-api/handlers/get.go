@@ -13,7 +13,7 @@ import (
 //	200: productsResponse
 
 // ListAll handles GET requests and returns all current products
-func (p *Products) ListAll(w http.ResponseWriter, r *http.Request) error {
+func (p *Products) ListAll(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	p.l.Println("[DEBUG] fetching all products")
 
@@ -23,8 +23,6 @@ func (p *Products) ListAll(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		p.l.Println("[ERROR] serializing product", err)
 	}
-
-	return nil
 }
 
 // swagger:route GET /products/{id} products listSingleProduct
