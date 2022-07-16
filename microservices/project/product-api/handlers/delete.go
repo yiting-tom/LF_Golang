@@ -35,11 +35,9 @@ func (p *Products) Delete(w http.ResponseWriter, r *http.Request) {
 
 		w.WriteHeader(http.StatusInternalServerError)
 		utils.ToJSON(&GenericError{Message: err.Error()}, w)
-		return nil
+		return
 	}
 
 	// unknown error
 	w.WriteHeader(http.StatusNoContent)
-
-	return nil
 }
