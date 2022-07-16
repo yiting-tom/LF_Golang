@@ -16,7 +16,7 @@ import (
 // 501: errorResponse
 
 // Delete handles DELETE requests and removes a product from the database
-func (p *Products) Delete(w http.ResponseWriter, r *http.Request) error {
+func (p *Products) Delete(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	id := getProductID(r)
 
