@@ -1,91 +1,94 @@
 package main
 
 import (
+	"11_http_multipart_requests/files"
+	"11_http_multipart_requests/handlers"
 	"context"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
-	"11_HTTP_multi-part_requests/data"
-	"11_HTTP_multi-part_requests/handlers"
-
-	"github.com/go-openapi/runtime/middleware"
-
-	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
+func init() {
+	// Log as JSON instead of the default ASCII formatter.
+	log.SetFormatter(&log.JSONFormatter{})
+
+	// Output to stdout instead of the default stderr
+	log.SetOutput(os.Stdout)
+
+	// Log the debug level and above log messages.
+	log.SetLevel(log.DebugLevel)
+}
+
 func main() {
+	// Create a new logger
+	l := log.New()
 
-	l := log.New(os.Stdout, "products-api ", log.LstdFlags)
-	v := data.NewValidation()
-
-	// create the handlers
-	ph := handlers.NewProducts(l, v)
-
-	// create a new serve mux and register the handlers
-	sm := mux.NewRouter()
-
-	// handlers for API
-	getR := sm.Methods(http.MethodGet).Subrouter()
-	getR.HandleFunc("/products", ph.ListAll)
-	getR.HandleFunc("/products/{id:[0-9]+}", ph.ListSingle)
-
-	putR := sm.Methods(http.MethodPut).Subrouter()
-	putR.HandleFunc("/products", ph.Update)
-	putR.Use(ph.MiddlewareValidateProduct)
-
-	postR := sm.Methods(http.MethodPost).Subrouter()
-	postR.HandleFunc("/products", ph.Create)
-	postR.Use(ph.MiddlewareValidateProduct)
-
-	deleteR := sm.Methods(http.MethodDelete).Subrouter()
-	deleteR.HandleFunc("/products/{id:[0-9]+}", ph.Delete)
-
-	// handler for documentation
-	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
-	sh := middleware.Redoc(opts, nil)
-
-	getR.Handle("/docs", sh)
-	getR.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
-
-	// CORS
-	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}))
-
-	// create a new server
-	s := http.Server{
-		Addr:         ":9090",           // configure the bind address
-		Handler:      ch(sm),            // set the default handler
-		ErrorLog:     l,                 // set the logger for the server
-		ReadTimeout:  5 * time.Second,   // max time to read request from the client
-		WriteTimeout: 10 * time.Second,  // max time to write response to the client
-		IdleTimeout:  120 * time.Second, // max time for connections using TCP Keep-Alive
+	// Set the base path for files storage
+	sp, err := filepath.Abs("./local-storage/")
+	if err != nil {
+		log.Fatal(err)
+		os.Exit(1)
 	}
 
-	// start the server
-	go func() {
-		l.Println("Starting server on port 9090")
+	// Create the local storage
+	// max size is set to 5MB
+	store, err := files.NewLocal(sp, 1024*1024*5)
+	if err != nil {
+		log.Fatal("failed to create local storage: ", err)
+		os.Exit(1)
+	}
 
-		err := s.ListenAndServe()
-		if err != nil {
-			l.Printf("Error starting server: %s\n", err)
+	// Create the handler
+	fh := handlers.NewFiles(l, store)
+
+	// filename regex: {filename: [a-zA-Z]+\\.[a-z]{3}}
+	fr := "/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{4}}"
+
+	// Create a new serve mux and register the handler
+	sm := mux.NewRouter()
+
+	gh := sm.Methods(http.MethodGet).Subrouter()
+	gh.HandleFunc(fr, fh.GetSingleImage)
+
+	ph := sm.Methods(http.MethodPost).Subrouter()
+	ph.HandleFunc(fr, fh.Create)
+
+	// Create a new server
+	s := &http.Server{
+		Addr:         ":9090",
+		Handler:      sm,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  120 * time.Second,
+	}
+
+	// Start the server
+	go func() {
+		l.Info("Start server on port 9090")
+
+		if err := s.ListenAndServe(); err != nil {
+			l.Fatal("Failed to start server: ", err)
 			os.Exit(1)
 		}
 	}()
 
-	// trap sigterm or interupt and gracefully shutdown the server
+	// Trap the SIGINT signal
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
-	signal.Notify(c, os.Signal(syscall.SIGTERM))
+	signal.Notify(c, syscall.SIGTERM)
 
-	// Block until a signal is received.
+	// Block until we receive our signal.
 	sig := <-c
-	log.Println("Got signal:", sig)
+	l.Info("Shutting down server with signal: ", sig)
 
-	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
+	// Gracefully shutdown the server with a 30 second timeout
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	s.Shutdown(ctx)
 }
