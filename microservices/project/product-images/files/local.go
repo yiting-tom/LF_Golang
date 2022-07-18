@@ -30,7 +30,8 @@ func (l *Local) Save(path string, contents io.Reader) error {
 
 	// Create the directory if it doesn't exist
 	d := filepath.Dir(p)
-	if err := os.Mkdir(d, os.ModePerm); err != nil {
+	err := os.Mkdir(d, os.ModePerm)
+	if err != nil && !os.IsExist(err) {
 		return fmt.Errorf("error creating directory %s: %s", d, err)
 	}
 
