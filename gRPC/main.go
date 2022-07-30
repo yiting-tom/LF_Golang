@@ -9,6 +9,22 @@ import (
 	"google.golang.org/grpc"
 )
 
+func getFeat(client pb.RouteGuideClient) {
+	feature, err := client.GetFeature(
+		context.Background(),
+		&pb.Point{
+			Latitude:  37,
+			Longitude: 122,
+		},
+	)
+
+	if err != nil {
+		log.Fatalf("failed to get feature: %v", err)
+	}
+
+	fmt.Println(feature)
+}
+
 func main() {
 	// Dial is a convenience function for dialing
 	// a client connection to a server.
@@ -25,16 +41,6 @@ func main() {
 	defer conn.Close()
 
 	client := pb.NewRouteGuideClient(conn)
-	feature, err := client.GetFeature(
-		context.Background(),
-		&pb.Point{
-			Latitude:  37,
-			Longitude: 122,
-		},
-	)
-	if err != nil {
-		log.Fatalf("failed to get feature: %v", err)
-	}
 
-	fmt.Println(feature)
+	getFeat(client)
 }
