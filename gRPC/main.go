@@ -15,7 +15,7 @@ func main() {
 	// the first argument is the target server address,
 	// and others are dial options.
 	conn, err := grpc.Dial(
-		"localhost:5000",
+		":5000",
 		grpc.WithInsecure(), // Since we don't have server yet
 		grpc.WithBlock(),    // Block until the connection is established
 	)
@@ -28,8 +28,8 @@ func main() {
 	feature, err := client.GetFeature(
 		context.Background(),
 		&pb.Point{
-			Latitude:  37427034,
-			Longitude: 12212124,
+			Latitude:  37,
+			Longitude: 122,
 		},
 	)
 	if err != nil {
