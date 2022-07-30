@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
+	"net"
 
+	log "github.com/sirupsen/logrus"
 	pb "github.com/yiting-tom/LF_Golang/grpc/route"
+	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -43,4 +46,17 @@ func (s *routeGuideServer) GetFeature(ctx context.Context, point *pb.Point) (*pb
 		}
 	}
 	return nil, nil
+}
+
+func main() {
+	// Create a new listener.
+	lis, err := net.Listen("tcp", ":5000")
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	// Create a new gRPC server.
+	gs := grpc.NewServer()
+	pb.RegisterRouteGuideServer(gs, dbServer())
+	log.Fatalf("failed to serve: %v", gs.Serve(lis))
 }
