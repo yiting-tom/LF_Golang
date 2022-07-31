@@ -1,28 +1,30 @@
-GRPC_PATH := $(PWD)/calculator
+GRPC_DIR := $(PWD)/calculator/
+PROTO_FILE_NAME := calculator.proto
 
 gen-route-path:
 	@echo "Generating route path..."
-	mkdir -p $(GRPC_PATH)
+	mkdir -p $(GRPC_DIR)
 	@echo "Done."
 
 gen-pb: gen-route-path
 	@echo "Generating protobuf files..."
 
-	protoc route.proto \
-		--proto_path $(GRPC_PATH) \
-		--go_out=$(GRPC_PATH) \
+	protoc $(PROTO_FILE_NAME) \
+		--proto_path $(GRPC_DIR) \
+		--go_out=$(GRPC_DIR) \
 		--go_opt=paths=source_relative \
-		--go-grpc_out=$(GRPC_PATH) \
+		--go-grpc_out=$(GRPC_DIR) \
 		--go-grpc_opt=paths=source_relative
 
 	@echo "Done."
 
-run-server:
+serve:
 	@echo "Running server..."
-	go run ./route-server/server.go
+	go run $(PWD)/server/main.go
 	@echo "Done."
 
-run-client:
+args=1 + 2
+request:
 	@echo "Running client..."
-	go run ./main.go
+	go run $(PWD)/client/main.go $(args)
 	@echo "Done."
