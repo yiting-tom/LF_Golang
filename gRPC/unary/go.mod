@@ -1,4 +1,4 @@
-module github.com/yiting-tom/LF_Golang/grpc
+module github.com/yiting-tom/LF_Golang/grpc/unary
 
 go 1.18
 
