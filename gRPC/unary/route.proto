@@ -1,0 +1,28 @@
+// rote.proto
+syntax = 'proto3';
+
+option go_package = ".;route";
+
+package route;
+
+enum Operator {
+    ADDITION = 0;
+    SUBSTRACTION = 1;
+    MULTIPLICATION = 2;
+    DIVISION = 3;
+}
+
+message FormulaRequest {
+    int32 a = 1;
+    int32 b = 2;
+    Operator opertaor = 3;
+}
+
+message FormulatResponse {
+    int32 result = 1;
+}
+
+service CalculatorService {
+    // Unary call
+    rpc Calcualte(FormulaRequest) returns (FormulatResponse) {};
+}
