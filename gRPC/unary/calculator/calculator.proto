@@ -1,9 +1,14 @@
+// Specify the syntax we use
 syntax = "proto3";
 
+// Specify the Go import path
+// more info: https://developers.google.com/protocol-buffers/docs/reference/go-generated#package
 option go_package = ".;calculator";
 
+// Specify the package name
 package calculator;
 
+// Operator enumeration provides for operator field type defined in FormulaRequst
 enum Operator {
     ADDITION = 0;
     SUBTRACTION = 1;
@@ -11,12 +16,14 @@ enum Operator {
     DIVISION = 3;
 }
 
+// FormulaRequest is the request message for the calculator client.
 message FormulaRequest {
     int32 a = 1;
     int32 b = 2;
     Operator operator = 3;
 }
 
+// Solution is the response message for the calculator server.
 message SolutionResponse {
     oneof response {
         int32 solution = 1;
@@ -24,7 +31,8 @@ message SolutionResponse {
     }
 }
 
+// CalculatorService defines the calculator service interface.
 service CalculatorService {
-    // Unary call
+    // Calculate performs the calculation.
     rpc Calculate(FormulaRequest) returns (SolutionResponse) {};
 }
