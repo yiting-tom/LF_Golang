@@ -1,18 +1,18 @@
-ROUTE_PATH := $(PWD)/route
+GRPC_PATH := $(PWD)/calculator
 
 gen-route-path:
 	@echo "Generating route path..."
-	mkdir -p $(ROUTE_PATH)
+	mkdir -p $(GRPC_PATH)
 	@echo "Done."
 
 gen-pb: gen-route-path
 	@echo "Generating protobuf files..."
 
 	protoc route.proto \
-		--proto_path $(ROUTE_PATH) \
-		--go_out=$(ROUTE_PATH) \
+		--proto_path $(GRPC_PATH) \
+		--go_out=$(GRPC_PATH) \
 		--go_opt=paths=source_relative \
-		--go-grpc_out=$(ROUTE_PATH) \
+		--go-grpc_out=$(GRPC_PATH) \
 		--go-grpc_opt=paths=source_relative
 
 	@echo "Done."
