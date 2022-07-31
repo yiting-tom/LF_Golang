@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option go_package = ".;calculator";
+
+package calculator;
+
+enum Operator {
+    ADDITION = 0;
+    SUBTRACTION = 1;
+    MULTIPLICATION = 2;
+    DIVISION = 3;
+}
+
+message FormulaRequest {
+    int32 a = 1;
+    int32 b = 2;
+    Operator operator = 3;
+}
+
+message SolutionResponse {
+    oneof response {
+        int32 solution = 1;
+        string error = 2;
+    }
+}
+
+service CalculatorService {
+    // Unary call
+    rpc Calculate(FormulaRequest) returns (SolutionResponse) {};
+}
