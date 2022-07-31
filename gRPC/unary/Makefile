@@ -1,10 +1,15 @@
+ROUTE_PATH := $(PWD)/route
+
 gen-pb:
 	@echo "Generating protobuf files..."
-	protoc --go_out=.\
-		--go_opt=paths=source_relative\
-		--go-grpc_out=.\
-		--go-grpc_opt=paths=source_relative\
-		route.proto
+
+	protoc route.proto \
+		--proto_path $(ROUTE_PATH) \
+		--go_out=$(ROUTE_PATH) \
+		--go_opt=paths=source_relative \
+		--go-grpc_out=$(ROUTE_PATH) \
+		--go-grpc_opt=paths=source_relative
+
 	@echo "Done."
 
 run-server:
