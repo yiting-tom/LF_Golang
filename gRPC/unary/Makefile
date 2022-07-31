@@ -1,6 +1,11 @@
 ROUTE_PATH := $(PWD)/route
 
-gen-pb:
+gen-route-path:
+	@echo "Generating route path..."
+	mkdir -p $(ROUTE_PATH)
+	@echo "Done."
+
+gen-pb: gen-route-path
 	@echo "Generating protobuf files..."
 
 	protoc route.proto \
